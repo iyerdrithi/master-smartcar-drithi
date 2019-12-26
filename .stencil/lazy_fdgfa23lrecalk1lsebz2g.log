@@ -1,0 +1,55 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { config } from '../../global/config';
+import { getIonMode } from '../../global/ionic-global';
+import { clamp } from '../../utils/helpers';
+import { createColorClasses } from '../../utils/theme';
+export const ProgressBar = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * The state of the progress bar, based on if the time the process takes is known or not.
+         * Default options are: `"determinate"` (no animation), `"indeterminate"` (animate from left to right).
+         */
+        this.type = 'determinate';
+        /**
+         * If true, reverse the progress bar direction.
+         */
+        this.reversed = false;
+        /**
+         * The value determines how much of the active bar should display when the
+         * `type` is `"determinate"`.
+         * The value should be between [0, 1].
+         */
+        this.value = 0;
+        /**
+         * If the buffer and value are smaller than 1, the buffer circles will show.
+         * The buffer should be between [0, 1].
+         */
+        this.buffer = 1;
+    }
+    render() {
+        const { color, type, reversed, value, buffer } = this;
+        const paused = config.getBoolean('_testing');
+        const mode = getIonMode(this);
+        return (h(Host, { role: "progressbar", "aria-valuenow": type === 'determinate' ? value : null, "aria-valuemin": "0", "aria-valuemax": "1", class: Object.assign(Object.assign({}, createColorClasses(color)), { [mode]: true, [`progress-bar-${type}`]: true, 'progress-paused': paused, 'progress-bar-reversed': document.dir === 'rtl' ? !reversed : reversed }) }, type === 'indeterminate'
+            ? renderIndeterminate()
+            : renderProgress(value, buffer)));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-progress-bar"; }
+};
+const renderIndeterminate = () => {
+    return [
+        h("div", { class: "indeterminate-bar-primary" }, h("span", { class: "progress-indeterminate" })),
+        h("div", { class: "indeterminate-bar-secondary" }, h("span", { class: "progress-indeterminate" }))
+    ];
+};
+const renderProgress = (value, buffer) => {
+    const finalValue = clamp(0, value, 1);
+    const finalBuffer = clamp(0, buffer, 1);
+    return [
+        h("div", { class: "progress", style: { transform: `scaleX(${finalValue})` } }),
+        finalBuffer !== 1 && h("div", { class: "buffer-circles" }),
+        h("div", { class: "progress-buffer-bar", style: { transform: `scaleX(${finalBuffer})` } }),
+    ];
+};

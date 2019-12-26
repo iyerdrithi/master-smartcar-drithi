@@ -1,0 +1,27 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses, openURL } from '../../utils/theme';
+export const RouterLink = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * When using a router, it specifies the transition direction when navigating to
+         * another page using `href`.
+         */
+        this.routerDirection = 'forward';
+        this.onClick = (ev) => {
+            openURL(this.href, ev, this.routerDirection);
+        };
+    }
+    render() {
+        const mode = getIonMode(this);
+        const attrs = {
+            href: this.href,
+            rel: this.rel,
+            target: this.target
+        };
+        return (h(Host, { onClick: this.onClick, class: Object.assign(Object.assign({}, createColorClasses(this.color)), { [mode]: true, 'ion-activatable': true }) }, h("a", Object.assign({}, attrs), h("slot", null))));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-router-link"; }
+};

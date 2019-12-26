@@ -1,0 +1,17 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent } from "@stencil/core";
+export const RouteRedirect = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.ionRouteRedirectChanged = __stencil_createEvent(this, "ionRouteRedirectChanged", 7);
+    }
+    propDidChange() {
+        this.ionRouteRedirectChanged.emit();
+    }
+    connectedCallback() {
+        this.ionRouteRedirectChanged.emit();
+    }
+    static get watchers() { return {
+        "from": ["propDidChange"],
+        "to": ["propDidChange"]
+    }; }
+};

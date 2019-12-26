@@ -1,0 +1,25 @@
+ion-virtual-scroll {
+  display: block;
+  position: relative;
+  width: 100%;
+  contain: strict;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+ion-virtual-scroll > .virtual-loading {
+  opacity: 0;
+}
+
+ion-virtual-scroll > .virtual-item {
+  /* stylelint-disable declaration-no-important, property-blacklist */
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: 0 !important;
+  -webkit-transition-duration: 0ms;
+  transition-duration: 0ms;
+  will-change: transform;
+}

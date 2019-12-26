@@ -1,0 +1,42 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses } from '../../utils/theme';
+export const Label = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.noAnimate = false;
+        this.ionStyle = __stencil_createEvent(this, "ionStyle", 7);
+    }
+    componentWillLoad() {
+        this.noAnimate = (this.position === 'floating');
+        this.emitStyle();
+    }
+    componentDidLoad() {
+        if (this.noAnimate) {
+            setTimeout(() => {
+                this.noAnimate = false;
+            }, 1000);
+        }
+    }
+    positionChanged() {
+        this.emitStyle();
+    }
+    emitStyle() {
+        const position = this.position;
+        this.ionStyle.emit({
+            'label': true,
+            [`label-${position}`]: position !== undefined
+        });
+    }
+    render() {
+        const position = this.position;
+        const mode = getIonMode(this);
+        return (h(Host, { class: Object.assign(Object.assign({}, createColorClasses(this.color)), { [mode]: true, [`label-${position}`]: position !== undefined, [`label-no-animate`]: (this.noAnimate) }) }));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "position": ["positionChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-label"; }
+};

@@ -1,0 +1,42 @@
+import { registerInstance as __stencil_registerInstance, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses } from '../../utils/theme';
+export const ItemOption = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * If `true`, the user cannot interact with the item option.
+         */
+        this.disabled = false;
+        /**
+         * If `true`, the option will expand to take up the available width and cover any other options.
+         */
+        this.expandable = false;
+        /**
+         * The type of the button.
+         */
+        this.type = 'button';
+        this.onClick = (ev) => {
+            const el = ev.target.closest('ion-item-option');
+            if (el) {
+                ev.preventDefault();
+            }
+        };
+    }
+    render() {
+        const { disabled, expandable, href } = this;
+        const TagType = href === undefined ? 'button' : 'a';
+        const mode = getIonMode(this);
+        const attrs = (TagType === 'button')
+            ? { type: this.type }
+            : {
+                download: this.download,
+                href: this.href,
+                target: this.target
+            };
+        return (h(Host, { onClick: this.onClick, class: Object.assign(Object.assign({}, createColorClasses(this.color)), { [mode]: true, 'item-option-disabled': disabled, 'item-option-expandable': expandable, 'ion-activatable': true }) }, h(TagType, Object.assign({}, attrs, { class: "button-native", disabled: disabled }), h("span", { class: "button-inner" }, h("slot", { name: "top" }), h("div", { class: "horizontal-wrapper" }, h("slot", { name: "start" }), h("slot", { name: "icon-only" }), h("slot", null), h("slot", { name: "end" })), h("slot", { name: "bottom" })), mode === 'md' && h("ion-ripple-effect", null))));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-item-option"; }
+};

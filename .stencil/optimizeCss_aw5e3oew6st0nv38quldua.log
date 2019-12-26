@@ -1,0 +1,45 @@
+.reorder-list-active > * {
+  -webkit-transition: -webkit-transform 300ms;
+  transition: -webkit-transform 300ms;
+  transition: transform 300ms;
+  transition: transform 300ms, -webkit-transform 300ms;
+  will-change: transform;
+}
+
+.reorder-enabled {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.reorder-enabled ion-reorder {
+  display: block;
+  cursor: -webkit-grab;
+  cursor: grab;
+  pointer-events: all;
+  -ms-touch-action: none;
+  touch-action: none;
+}
+
+.reorder-selected,
+.reorder-selected ion-reorder {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.reorder-selected {
+  position: relative;
+  /* stylelint-disable-next-line declaration-no-important */
+  -webkit-transition: none !important;
+  transition: none !important;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  opacity: 0.8;
+  z-index: 100;
+}
+
+.reorder-visible ion-reorder .reorder-icon {
+  -webkit-transform: translate3d(0,  0,  0);
+  transform: translate3d(0,  0,  0);
+}

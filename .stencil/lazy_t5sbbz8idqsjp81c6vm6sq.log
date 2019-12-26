@@ -1,0 +1,45 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses } from '../../utils/theme';
+export const TabBar = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.keyboardVisible = false;
+        /**
+         * If `true`, the tab bar will be translucent.
+         * Only applies when the mode is `"ios"` and the device supports
+         * [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
+         */
+        this.translucent = false;
+        this.ionTabBarChanged = __stencil_createEvent(this, "ionTabBarChanged", 7);
+    }
+    selectedTabChanged() {
+        if (this.selectedTab !== undefined) {
+            this.ionTabBarChanged.emit({
+                tab: this.selectedTab
+            });
+        }
+    }
+    onKeyboardWillHide() {
+        setTimeout(() => this.keyboardVisible = false, 50);
+    }
+    onKeyboardWillShow() {
+        if (this.el.getAttribute('slot') !== 'top') {
+            this.keyboardVisible = true;
+        }
+    }
+    componentWillLoad() {
+        this.selectedTabChanged();
+    }
+    render() {
+        const { color, translucent, keyboardVisible } = this;
+        const mode = getIonMode(this);
+        return (h(Host, { role: "tablist", "aria-hidden": keyboardVisible ? 'true' : null, class: Object.assign(Object.assign({}, createColorClasses(color)), { [mode]: true, 'tab-bar-translucent': translucent, 'tab-bar-hidden': keyboardVisible }) }, h("slot", null)));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "selectedTab": ["selectedTabChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-tab-bar"; }
+};

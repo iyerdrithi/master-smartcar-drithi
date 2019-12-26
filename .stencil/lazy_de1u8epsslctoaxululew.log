@@ -1,0 +1,117 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { attachComponent, detachComponent } from '../../utils/framework-delegate';
+import { BACKDROP, dismiss, eventMethod, prepareOverlay, present } from '../../utils/overlays';
+import { getClassMap } from '../../utils/theme';
+import { deepReady } from '../../utils/transition';
+import { iosEnterAnimation } from './animations/ios.enter';
+import { iosLeaveAnimation } from './animations/ios.leave';
+import { mdEnterAnimation } from './animations/md.enter';
+import { mdLeaveAnimation } from './animations/md.leave';
+export const Modal = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.presented = false;
+        this.mode = getIonMode(this);
+        /**
+         * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
+         */
+        this.keyboardClose = true;
+        /**
+         * If `true`, the modal will be dismissed when the backdrop is clicked.
+         */
+        this.backdropDismiss = true;
+        /**
+         * If `true`, a backdrop will be displayed behind the modal.
+         */
+        this.showBackdrop = true;
+        /**
+         * If `true`, the modal will animate.
+         */
+        this.animated = true;
+        this.onBackdropTap = () => {
+            this.dismiss(undefined, BACKDROP);
+        };
+        this.onDismiss = (ev) => {
+            ev.stopPropagation();
+            ev.preventDefault();
+            this.dismiss();
+        };
+        this.onLifecycle = (modalEvent) => {
+            const el = this.usersElement;
+            const name = LIFECYCLE_MAP[modalEvent.type];
+            if (el && name) {
+                const ev = new CustomEvent(name, {
+                    bubbles: false,
+                    cancelable: false,
+                    detail: modalEvent.detail
+                });
+                el.dispatchEvent(ev);
+            }
+        };
+        prepareOverlay(this.el);
+        this.didPresent = __stencil_createEvent(this, "ionModalDidPresent", 7);
+        this.willPresent = __stencil_createEvent(this, "ionModalWillPresent", 7);
+        this.willDismiss = __stencil_createEvent(this, "ionModalWillDismiss", 7);
+        this.didDismiss = __stencil_createEvent(this, "ionModalDidDismiss", 7);
+    }
+    /**
+     * Present the modal overlay after it has been created.
+     */
+    async present() {
+        if (this.presented) {
+            return;
+        }
+        const container = this.el.querySelector(`.modal-wrapper`);
+        if (!container) {
+            throw new Error('container is undefined');
+        }
+        const componentProps = Object.assign(Object.assign({}, this.componentProps), { modal: this.el });
+        this.usersElement = await attachComponent(this.delegate, container, this.component, ['ion-page'], componentProps);
+        await deepReady(this.usersElement);
+        return present(this, 'modalEnter', iosEnterAnimation, mdEnterAnimation);
+    }
+    /**
+     * Dismiss the modal overlay after it has been presented.
+     *
+     * @param data Any data to emit in the dismiss events.
+     * @param role The role of the element that is dismissing the modal. For example, 'cancel' or 'backdrop'.
+     */
+    async dismiss(data, role) {
+        const dismissed = await dismiss(this, data, role, 'modalLeave', iosLeaveAnimation, mdLeaveAnimation);
+        if (dismissed) {
+            await detachComponent(this.delegate, this.usersElement);
+        }
+        return dismissed;
+    }
+    /**
+     * Returns a promise that resolves when the modal did dismiss.
+     */
+    onDidDismiss() {
+        return eventMethod(this.el, 'ionModalDidDismiss');
+    }
+    /**
+     * Returns a promise that resolves when the modal will dismiss.
+     */
+    onWillDismiss() {
+        return eventMethod(this.el, 'ionModalWillDismiss');
+    }
+    render() {
+        const mode = getIonMode(this);
+        return (h(Host, { "no-router": true, "aria-modal": "true", class: Object.assign({ [mode]: true }, getClassMap(this.cssClass)), style: {
+                zIndex: `${20000 + this.overlayIndex}`,
+            }, onIonBackdropTap: this.onBackdropTap, onIonDismiss: this.onDismiss, onIonModalDidPresent: this.onLifecycle, onIonModalWillPresent: this.onLifecycle, onIonModalWillDismiss: this.onLifecycle, onIonModalDidDismiss: this.onLifecycle }, h("ion-backdrop", { visible: this.showBackdrop, tappable: this.backdropDismiss }), h("div", { role: "dialog", class: {
+                [`modal-wrapper`]: true,
+                [mode]: true,
+            } })));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-modal"; }
+};
+const LIFECYCLE_MAP = {
+    'ionModalDidPresent': 'ionViewDidEnter',
+    'ionModalWillPresent': 'ionViewWillEnter',
+    'ionModalWillDismiss': 'ionViewWillLeave',
+    'ionModalDidDismiss': 'ionViewDidLeave',
+};

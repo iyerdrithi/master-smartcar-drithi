@@ -1,9 +1,5 @@
 import { r as registerInstance, h } from './core-4ccd584b.js';
 
-function sayHello() {
-    return Math.random() < 0.5 ? 'Hello' : 'Hola';
-}
-
 const AppProfile = class {
     constructor(hostRef) {
         registerInstance(this, hostRef);
@@ -18,7 +14,7 @@ const AppProfile = class {
     render() {
         return [
             h("ion-header", null, h("ion-toolbar", { color: "primary" }, h("ion-buttons", { slot: "start" }, h("ion-back-button", { defaultHref: "/" })), h("ion-title", null, "Profile: ", this.name))),
-            h("ion-content", { class: "ion-padding" }, h("p", null, sayHello(), "! My name is ", this.formattedName(), ". My name was passed in through a route param!"), h("ion-item", null, h("ion-label", null, "Setting (", this.state.toString(), ")"), h("ion-toggle", { checked: this.state, onIonChange: ev => (this.state = ev.detail.checked) })))
+            h("ion-content", { class: "ion-padding" }, h("form", null, h("ion-item", null, h("ion-label", null, " Email "), h("ion-input", { type: "email" }, " ")), h("ion-item", null, h("ion-label", null, " Password "), h("ion-input", { type: "password" }, " "))))
         ];
     }
     static get style() { return ""; }

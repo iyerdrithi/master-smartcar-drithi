@@ -1,7 +1,7 @@
 import { r as registerInstance, e as createEvent, d as getIonMode, h, H as Host, f as getElement } from './core-4ccd584b.js';
 import { c as createColorClasses, h as hostContext } from './theme-215399f6.js';
 import { f as findItemLabel, a as renderHiddenInput } from './helpers-ad941782.js';
-import { c as hapticSelection } from './haptic-1fced9fd.js';
+import { h as hapticSelection } from './haptic-aefa686e.js';
 
 const Toggle = class {
     constructor(hostRef) {

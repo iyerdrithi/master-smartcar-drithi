@@ -1,0 +1,66 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses } from '../../utils/theme';
+export const Segment = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.didInit = false;
+        /**
+         * If `true`, the user cannot interact with the segment.
+         */
+        this.disabled = false;
+        /**
+         * If `true`, the segment buttons will overflow and the user can swipe to see them.
+         */
+        this.scrollable = false;
+        this.ionChange = __stencil_createEvent(this, "ionChange", 7);
+        this.ionStyle = __stencil_createEvent(this, "ionStyle", 7);
+    }
+    valueChanged(value) {
+        if (this.didInit) {
+            this.updateButtons();
+            this.ionChange.emit({ value });
+        }
+    }
+    segmentClick(ev) {
+        const selectedButton = ev.target;
+        this.value = selectedButton.value;
+    }
+    connectedCallback() {
+        if (this.value === undefined) {
+            const checked = this.getButtons().find(b => b.checked);
+            if (checked) {
+                this.value = checked.value;
+            }
+        }
+        this.emitStyle();
+    }
+    componentDidLoad() {
+        this.updateButtons();
+        this.didInit = true;
+    }
+    emitStyle() {
+        this.ionStyle.emit({
+            'segment': true
+        });
+    }
+    updateButtons() {
+        const value = this.value;
+        for (const button of this.getButtons()) {
+            button.checked = (button.value === value);
+        }
+    }
+    getButtons() {
+        return Array.from(this.el.querySelectorAll('ion-segment-button'));
+    }
+    render() {
+        const mode = getIonMode(this);
+        return (h(Host, { class: Object.assign(Object.assign({}, createColorClasses(this.color)), { [mode]: true, 'segment-disabled': this.disabled, 'segment-scrollable': this.scrollable }) }));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "value": ["valueChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-segment"; }
+};

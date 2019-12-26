@@ -1,5 +1,5 @@
 import { r as registerInstance, e as createEvent, d as getIonMode, h, H as Host, f as getElement } from './core-4ccd584b.js';
-import { h as hapticSelectionStart, a as hapticSelectionChanged, b as hapticSelectionEnd } from './haptic-1fced9fd.js';
+import { a as hapticSelectionStart, b as hapticSelectionChanged, c as hapticSelectionEnd } from './haptic-aefa686e.js';
 
 const ReorderGroup = class {
     constructor(hostRef) {

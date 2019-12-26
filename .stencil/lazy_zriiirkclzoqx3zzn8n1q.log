@@ -1,0 +1,17 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+export const Slide = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+    }
+    render() {
+        const mode = getIonMode(this);
+        return (h(Host, { class: {
+                [mode]: true,
+                'swiper-slide': true,
+                'swiper-zoom-container': true
+            } }));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-slide"; }
+};

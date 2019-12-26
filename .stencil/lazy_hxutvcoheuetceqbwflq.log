@@ -1,0 +1,202 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Build, Host, h, readTask } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { debounceEvent, findItemLabel } from '../../utils/helpers';
+import { createColorClasses } from '../../utils/theme';
+export const Textarea = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.inputId = `ion-input-${textareaIds++}`;
+        this.didBlurAfterEdit = false;
+        this.hasFocus = false;
+        /**
+         * Indicates whether and how the text value should be automatically capitalized as it is entered/edited by the user.
+         */
+        this.autocapitalize = 'none';
+        /**
+         * This Boolean attribute lets you specify that a form control should have input focus when the page loads.
+         */
+        this.autofocus = false;
+        /**
+         * If `true`, the value will be cleared after focus upon edit. Defaults to `true` when `type` is `"password"`, `false` for all other types.
+         */
+        this.clearOnEdit = false;
+        /**
+         * Set the amount of time, in milliseconds, to wait to trigger the `ionChange` event after each keystroke.
+         */
+        this.debounce = 0;
+        /**
+         * If `true`, the user cannot interact with the textarea.
+         */
+        this.disabled = false;
+        /**
+         * The name of the control, which is submitted with the form data.
+         */
+        this.name = this.inputId;
+        /**
+         * If `true`, the user cannot modify the value.
+         */
+        this.readonly = false;
+        /**
+         * If `true`, the user must fill in a value before submitting a form.
+         */
+        this.required = false;
+        /**
+         * If `true`, the element will have its spelling and grammar checked.
+         */
+        this.spellcheck = false;
+        /**
+         * If `true`, the element height will increase based on the value.
+         */
+        this.autoGrow = false;
+        /**
+         * The value of the textarea.
+         */
+        this.value = '';
+        this.onInput = (ev) => {
+            if (this.nativeInput) {
+                this.value = this.nativeInput.value;
+            }
+            this.emitStyle();
+            this.ionInput.emit(ev);
+        };
+        this.onFocus = () => {
+            this.hasFocus = true;
+            this.focusChange();
+            this.ionFocus.emit();
+        };
+        this.onBlur = () => {
+            this.hasFocus = false;
+            this.focusChange();
+            this.ionBlur.emit();
+        };
+        this.onKeyDown = () => {
+            this.checkClearOnEdit();
+        };
+        this.ionChange = __stencil_createEvent(this, "ionChange", 7);
+        this.ionInput = __stencil_createEvent(this, "ionInput", 7);
+        this.ionStyle = __stencil_createEvent(this, "ionStyle", 7);
+        this.ionBlur = __stencil_createEvent(this, "ionBlur", 7);
+        this.ionFocus = __stencil_createEvent(this, "ionFocus", 7);
+    }
+    debounceChanged() {
+        this.ionChange = debounceEvent(this.ionChange, this.debounce);
+    }
+    disabledChanged() {
+        this.emitStyle();
+    }
+    /**
+     * Update the native input element when the value changes
+     */
+    valueChanged() {
+        const nativeInput = this.nativeInput;
+        const value = this.getValue();
+        if (nativeInput && nativeInput.value !== value) {
+            nativeInput.value = value;
+        }
+        this.runAutoGrow();
+        this.emitStyle();
+        this.ionChange.emit({ value });
+    }
+    connectedCallback() {
+        this.emitStyle();
+        this.debounceChanged();
+        if (Build.isBrowser) {
+            this.el.dispatchEvent(new CustomEvent('ionInputDidLoad', {
+                detail: this.el
+            }));
+        }
+    }
+    disconnectedCallback() {
+        if (Build.isBrowser) {
+            document.dispatchEvent(new CustomEvent('ionInputDidUnload', {
+                detail: this.el
+            }));
+        }
+    }
+    componentDidLoad() {
+        this.runAutoGrow();
+    }
+    // TODO: performance hit, this cause layout thrashing
+    runAutoGrow() {
+        const nativeInput = this.nativeInput;
+        if (nativeInput && this.autoGrow) {
+            readTask(() => {
+                nativeInput.style.height = 'inherit';
+                nativeInput.style.height = nativeInput.scrollHeight + 'px';
+            });
+        }
+    }
+    /**
+     * Sets focus on the specified `ion-textarea`. Use this method instead of the global
+     * `input.focus()`.
+     */
+    async setFocus() {
+        if (this.nativeInput) {
+            this.nativeInput.focus();
+        }
+    }
+    /**
+     * Returns the native `<textarea>` element used under the hood.
+     */
+    getInputElement() {
+        return Promise.resolve(this.nativeInput);
+    }
+    emitStyle() {
+        this.ionStyle.emit({
+            'interactive': true,
+            'textarea': true,
+            'input': true,
+            'interactive-disabled': this.disabled,
+            'has-placeholder': this.placeholder != null,
+            'has-value': this.hasValue(),
+            'has-focus': this.hasFocus
+        });
+    }
+    /**
+     * Check if we need to clear the text input if clearOnEdit is enabled
+     */
+    checkClearOnEdit() {
+        if (!this.clearOnEdit) {
+            return;
+        }
+        // Did the input value change after it was blurred and edited?
+        if (this.didBlurAfterEdit && this.hasValue()) {
+            // Clear the input
+            this.value = '';
+        }
+        // Reset the flag
+        this.didBlurAfterEdit = false;
+    }
+    focusChange() {
+        // If clearOnEdit is enabled and the input blurred but has a value, set a flag
+        if (this.clearOnEdit && !this.hasFocus && this.hasValue()) {
+            this.didBlurAfterEdit = true;
+        }
+        this.emitStyle();
+    }
+    hasValue() {
+        return this.getValue() !== '';
+    }
+    getValue() {
+        return this.value || '';
+    }
+    render() {
+        const mode = getIonMode(this);
+        const value = this.getValue();
+        const labelId = this.inputId + '-lbl';
+        const label = findItemLabel(this.el);
+        if (label) {
+            label.id = labelId;
+        }
+        return (h(Host, { "aria-disabled": this.disabled ? 'true' : null, class: Object.assign(Object.assign({}, createColorClasses(this.color)), { [mode]: true }) }, h("textarea", { class: "native-textarea", ref: el => this.nativeInput = el, autoCapitalize: this.autocapitalize, autoFocus: this.autofocus, disabled: this.disabled, maxLength: this.maxlength, minLength: this.minlength, name: this.name, placeholder: this.placeholder || '', readOnly: this.readonly, required: this.required, spellCheck: this.spellcheck, cols: this.cols, rows: this.rows, wrap: this.wrap, onInput: this.onInput, onBlur: this.onBlur, onFocus: this.onFocus, onKeyDown: this.onKeyDown }, value)));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "debounce": ["debounceChanged"],
+        "disabled": ["disabledChanged"],
+        "value": ["valueChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-textarea"; }
+};
+let textareaIds = 0;

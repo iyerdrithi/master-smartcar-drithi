@@ -1,0 +1,40 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses } from '../../utils/theme';
+export const ToolbarTitle = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.ionStyle = __stencil_createEvent(this, "ionStyle", 7);
+    }
+    sizeChanged() {
+        this.emitStyle();
+    }
+    connectedCallback() {
+        this.emitStyle();
+    }
+    emitStyle() {
+        const size = this.getSize();
+        this.ionStyle.emit({
+            [`title-${size}`]: true
+        });
+    }
+    getSize() {
+        return (this.size !== undefined) ? this.size : 'default';
+    }
+    getMode() {
+        const mode = getIonMode(this);
+        const toolbar = this.el.closest('ion-toolbar');
+        return (toolbar && toolbar.mode) || mode;
+    }
+    render() {
+        const mode = this.getMode();
+        const size = this.getSize();
+        return (h(Host, { class: Object.assign({ [mode]: true, [`title-${mode}`]: true, [`title-${size}`]: true }, createColorClasses(this.color)) }, h("div", { class: "toolbar-title" }, h("slot", null))));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "size": ["sizeChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-title"; }
+};

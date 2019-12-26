@@ -1,0 +1,21 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { h } from "@stencil/core";
+export const AppProfile = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.state = false;
+    }
+    formattedName() {
+        if (this.name) {
+            return this.name.substr(0, 1).toUpperCase() + this.name.substr(1).toLowerCase();
+        }
+        return '';
+    }
+    render() {
+        return [
+            h("ion-header", null, h("ion-toolbar", { color: "primary" }, h("ion-buttons", { slot: "start" }, h("ion-back-button", { defaultHref: "/" })), h("ion-title", null, "Profile: ", this.name))),
+            h("ion-content", { class: "ion-padding" }, h("form", null, h("ion-label", null, " Email "), h("ion-input", null, " ")))
+        ];
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:app-profile"; }
+};

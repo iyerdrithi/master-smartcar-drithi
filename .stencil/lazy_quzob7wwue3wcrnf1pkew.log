@@ -1,0 +1,45 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { config } from '../../global/config';
+import { getIonMode } from '../../global/ionic-global';
+import { menuController } from '../../utils/menu-controller';
+import { createColorClasses } from '../../utils/theme';
+import { updateVisibility } from '../menu-toggle/menu-toggle-util';
+export const MenuButton = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.visible = false;
+        /**
+         * If `true`, the user cannot interact with the menu button.
+         */
+        this.disabled = false;
+        /**
+         * Automatically hides the menu button when the corresponding menu is not active
+         */
+        this.autoHide = true;
+        /**
+         * The type of the button.
+         */
+        this.type = 'button';
+        this.onClick = async () => {
+            return menuController.toggle(this.menu);
+        };
+    }
+    componentDidLoad() {
+        this.visibilityChanged();
+    }
+    async visibilityChanged() {
+        this.visible = await updateVisibility(this.menu);
+    }
+    render() {
+        const { color, disabled } = this;
+        const mode = getIonMode(this);
+        const menuIcon = config.get('menuIcon', 'menu');
+        const hidden = this.autoHide && !this.visible;
+        const attrs = {
+            type: this.type
+        };
+        return (h(Host, { onClick: this.onClick, "aria-disabled": disabled ? 'true' : null, "aria-hidden": hidden ? 'true' : null, class: Object.assign(Object.assign({ [mode]: true }, createColorClasses(color)), { 'button': true, 'menu-button-hidden': hidden, 'menu-button-disabled': disabled, 'ion-activatable': true, 'ion-focusable': true }) }, h("button", Object.assign({}, attrs, { disabled: disabled, class: "button-native" }), h("slot", null, h("ion-icon", { icon: menuIcon, mode: mode, lazy: false })), mode === 'md' && h("ion-ripple-effect", { type: "unbounded" }))));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-menu-button"; }
+};

@@ -11,7 +11,7 @@ import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 
 export namespace Components {
   interface ApiExplorer {
-    'value': any;
+    'request': any;
   }
   interface AppHome {}
   interface AppProfile {
@@ -57,7 +57,7 @@ declare global {
 declare namespace LocalJSX {
   interface ApiExplorer {
     'onFormElementUpdated'?: (event: CustomEvent<any>) => void;
-    'value'?: any;
+    'request'?: any;
   }
   interface AppHome {}
   interface AppProfile {

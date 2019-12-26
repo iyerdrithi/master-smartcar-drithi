@@ -1,0 +1,87 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { findItemLabel } from '../../utils/helpers';
+import { createColorClasses, hostContext } from '../../utils/theme';
+export const Radio = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.inputId = `ion-rb-${radioButtonIds++}`;
+        /**
+         * The name of the control, which is submitted with the form data.
+         */
+        this.name = this.inputId;
+        /**
+         * If `true`, the user cannot interact with the radio.
+         */
+        this.disabled = false;
+        /**
+         * If `true`, the radio is selected.
+         */
+        this.checked = false;
+        this.onFocus = () => {
+            this.ionFocus.emit();
+        };
+        this.onBlur = () => {
+            this.ionBlur.emit();
+        };
+        this.onClick = () => {
+            if (this.checked) {
+                this.ionDeselect.emit();
+            }
+            else {
+                this.checked = true;
+            }
+        };
+        this.ionStyle = __stencil_createEvent(this, "ionStyle", 7);
+        this.ionSelect = __stencil_createEvent(this, "ionSelect", 7);
+        this.ionDeselect = __stencil_createEvent(this, "ionDeselect", 7);
+        this.ionFocus = __stencil_createEvent(this, "ionFocus", 7);
+        this.ionBlur = __stencil_createEvent(this, "ionBlur", 7);
+    }
+    colorChanged() {
+        this.emitStyle();
+    }
+    checkedChanged(isChecked) {
+        if (isChecked) {
+            this.ionSelect.emit({
+                checked: true,
+                value: this.value
+            });
+        }
+        this.emitStyle();
+    }
+    disabledChanged() {
+        this.emitStyle();
+    }
+    componentWillLoad() {
+        if (this.value === undefined) {
+            this.value = this.inputId;
+        }
+        this.emitStyle();
+    }
+    emitStyle() {
+        this.ionStyle.emit({
+            'radio-checked': this.checked,
+            'interactive-disabled': this.disabled,
+        });
+    }
+    render() {
+        const { inputId, disabled, checked, color, el } = this;
+        const mode = getIonMode(this);
+        const labelId = inputId + '-lbl';
+        const label = findItemLabel(el);
+        if (label) {
+            label.id = labelId;
+        }
+        return (h(Host, { onClick: this.onClick, role: "radio", "aria-disabled": disabled ? 'true' : null, "aria-checked": `${checked}`, "aria-labelledby": labelId, class: Object.assign(Object.assign({}, createColorClasses(color)), { [mode]: true, 'in-item': hostContext('ion-item', el), 'interactive': true, 'radio-checked': checked, 'radio-disabled': disabled }) }, h("div", { class: "radio-icon" }, h("div", { class: "radio-inner" })), h("button", { type: "button", onFocus: this.onFocus, onBlur: this.onBlur, disabled: disabled })));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "color": ["colorChanged"],
+        "checked": ["checkedChanged"],
+        "disabled": ["disabledChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-radio"; }
+};
+let radioButtonIds = 0;

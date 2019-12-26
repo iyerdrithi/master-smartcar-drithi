@@ -1,0 +1,61 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses, hostContext, openURL } from '../../utils/theme';
+export const FabButton = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * If `true`, the fab button will be show a close icon.
+         */
+        this.activated = false;
+        /**
+         * If `true`, the user cannot interact with the fab button.
+         */
+        this.disabled = false;
+        /**
+         * When using a router, it specifies the transition direction when navigating to
+         * another page using `href`.
+         */
+        this.routerDirection = 'forward';
+        /**
+         * If `true`, the fab button will show when in a fab-list.
+         */
+        this.show = false;
+        /**
+         * If `true`, the fab button will be translucent.
+         * Only applies when the mode is `"ios"` and the device supports
+         * [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
+         */
+        this.translucent = false;
+        /**
+         * The type of the button.
+         */
+        this.type = 'button';
+        this.onFocus = () => {
+            this.ionFocus.emit();
+        };
+        this.onBlur = () => {
+            this.ionBlur.emit();
+        };
+        this.ionFocus = __stencil_createEvent(this, "ionFocus", 7);
+        this.ionBlur = __stencil_createEvent(this, "ionBlur", 7);
+    }
+    render() {
+        const { el, disabled, color, href, activated, show, translucent, size } = this;
+        const inList = hostContext('ion-fab-list', el);
+        const mode = getIonMode(this);
+        const TagType = href === undefined ? 'button' : 'a';
+        const attrs = (TagType === 'button')
+            ? { type: this.type }
+            : {
+                download: this.download,
+                href,
+                rel: this.rel,
+                target: this.target
+            };
+        return (h(Host, { "aria-disabled": disabled ? 'true' : null, class: Object.assign(Object.assign({}, createColorClasses(color)), { [mode]: true, 'fab-button-in-list': inList, 'fab-button-translucent-in-list': inList && translucent, 'fab-button-close-active': activated, 'fab-button-show': show, 'fab-button-disabled': disabled, 'fab-button-translucent': translucent, 'ion-activatable': true, 'ion-focusable': true, [`fab-button-${size}`]: size !== undefined }) }, h(TagType, Object.assign({}, attrs, { class: "button-native", disabled: disabled, onFocus: this.onFocus, onBlur: this.onBlur, onClick: (ev) => openURL(href, ev, this.routerDirection) }), h("span", { class: "close-icon" }, h("ion-icon", { name: "close", lazy: false })), h("span", { class: "button-inner" }, h("slot", null)), mode === 'md' && h("ion-ripple-effect", null))));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-fab-button"; }
+};

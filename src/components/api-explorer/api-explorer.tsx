@@ -10,26 +10,26 @@ export class ApiExplorer {
     name: null,
     phone: null,
   };
-  @Prop() value: any;
+  @Prop() request: any;
   @Event() formElementUpdated: EventEmitter;
 
   handleClick(e) {
     e.preventDefault();
     // console.log(this.formControls);
-    console.log(JSON.stringify(this.formControls));
-    return [
-    <ion-textarea
-      value={JSON.stringify(this.formControls)}> </ion-textarea>
-      ];
+    let body = document.getElementById("response") as HTMLInputElement;
+    let label = document.getElementById("responseLabel") as HTMLInputElement;
+    label.value = "Status: Success"
+    body.value=JSON.stringify(this.formControls)
   }
 
-  changeFormValue(controlName, value) {
-    console.log("hello");
+  changeFormValue(controlName, request) {
+    // console.log("hello");
     this.formControls = {
       ...this.formControls,
-      [controlName] : value
+      [controlName] : request
     };
   }
+
 
   render() {
     return [
@@ -40,30 +40,23 @@ export class ApiExplorer {
       </ion-header>,
 
       <ion-content>
+        <form>
         <ion-item>
           <ion-grid class={"ion-no-padding"}>
           <ion-row>
-            <ion-col>
             <ion-text class={"font"} color={"primary"}> Add a new user </ion-text>
-            </ion-col>
           </ion-row>
             <ion-row>
-            <ion-col>
               <ion-text> POST </ion-text>
-            </ion-col>
             </ion-row>
           </ion-grid>
 
           <ion-grid class={"ion-no-padding"}>
             <ion-row>
-              <ion-col>
               <ion-text class={"font"} color={"primary"}> Base URL </ion-text>
-              </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col>
               <ion-text> https://jsonplaceholder.typicode.com/ </ion-text>
-              </ion-col>
               </ion-row>
           </ion-grid>
         </ion-item>
@@ -85,7 +78,7 @@ export class ApiExplorer {
           <ion-label position={"floating"}> Full Name </ion-label>
           <ion-input
             required={true}
-            name={"name"}
+            name={"full-name"}
             type={"text"}
             placeholder={"John Doe"}
             value={this.formControls.name}
@@ -97,14 +90,27 @@ export class ApiExplorer {
             required={true}
             name={"phone"}
             type={"tel"}
-            placeholder={"000-0000"}
+            pattern={'[0-9]{3}-[0-9]{3}-[0-9]{4}'}
+            placeholder={"000-000-0000"}
             value={this.formControls.phone}
             onInput={(ev: any) => this.changeFormValue("phone", ev.target.value)}> </ion-input>
         </ion-item>
         <ion-button
           onClick={(e) => this.handleClick(e)}
           expand="block">Send Request</ion-button>
+        <ion-item>
+        <ion-label
+            color={"primary"} class={"font"} position={"floating"}> Response </ion-label>
+          <ion-input
+              id={"responseLabel"}
+              value={"Status: Not Sent"} readonly> </ion-input>
+          <ion-textarea
+            id={"response"} readonly>
+          </ion-textarea>
+        </ion-item>
+        </form>
       </ion-content>
     ];
   }
 }
+

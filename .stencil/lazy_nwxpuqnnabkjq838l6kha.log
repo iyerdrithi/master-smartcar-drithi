@@ -1,0 +1,37 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Build } from "@stencil/core";
+import { createOverlay, dismissOverlay, getOverlay } from '../../utils/overlays';
+export const ToastController = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        if (Build.isDev) {
+            console.warn(`[DEPRECATED][ion-toast-controller] Use the toastController export from @ionic/core:
+  import { toastController } from '@ionic/core';
+  const toast = await toastController.create({...});`);
+        }
+    }
+    /**
+     * Create a toast overlay with toast options.
+     *
+     * @param options The options to use to create the toast.
+     */
+    create(options) {
+        return createOverlay('ion-toast', options);
+    }
+    /**
+     * Dismiss the open toast overlay.
+     *
+     * @param data Any data to emit in the dismiss events.
+     * @param role The role of the element that is dismissing the toast. For example, 'cancel' or 'backdrop'.
+     * @param id The id of the toast to dismiss. If an id is not provided, it will dismiss the most recently opened toast.
+     */
+    dismiss(data, role, id) {
+        return dismissOverlay(document, data, role, 'ion-toast', id);
+    }
+    /**
+     * Get the most recently opened toast overlay.
+     */
+    async getTop() {
+        return getOverlay(document, 'ion-toast');
+    }
+};

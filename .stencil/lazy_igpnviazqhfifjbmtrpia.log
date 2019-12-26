@@ -1,0 +1,65 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+let ids = 0;
+export const SegmentButton = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * If `true`, the segment button is selected.
+         */
+        this.checked = false;
+        /**
+         * If `true`, the user cannot interact with the segment button.
+         */
+        this.disabled = false;
+        /**
+         * Set the layout of the text and icon in the segment.
+         */
+        this.layout = 'icon-top';
+        /**
+         * The type of the button.
+         */
+        this.type = 'button';
+        /**
+         * The value of the segment button.
+         */
+        this.value = 'ion-sb-' + (ids++);
+        this.onClick = () => {
+            this.checked = true;
+        };
+        this.ionSelect = __stencil_createEvent(this, "ionSelect", 7);
+    }
+    checkedChanged(checked, prev) {
+        if (checked && !prev) {
+            this.ionSelect.emit();
+        }
+    }
+    get hasLabel() {
+        return !!this.el.querySelector('ion-label');
+    }
+    get hasIcon() {
+        return !!this.el.querySelector('ion-icon');
+    }
+    render() {
+        const { checked, type, disabled, hasIcon, hasLabel, layout } = this;
+        const mode = getIonMode(this);
+        return (h(Host, { onClick: this.onClick, "aria-disabled": disabled ? 'true' : null, class: {
+                [mode]: true,
+                'segment-button-has-label': hasLabel,
+                'segment-button-has-icon': hasIcon,
+                'segment-button-has-label-only': hasLabel && !hasIcon,
+                'segment-button-has-icon-only': hasIcon && !hasLabel,
+                'segment-button-disabled': disabled,
+                'segment-button-checked': checked,
+                [`segment-button-layout-${layout}`]: true,
+                'ion-activatable': true,
+                'ion-activatable-instant': true,
+            } }, h("button", { type: type, "aria-pressed": checked ? 'true' : null, class: "button-native", disabled: disabled }, h("slot", null), mode === 'md' && h("ion-ripple-effect", null)), h("div", { class: "segment-button-indicator" })));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get watchers() { return {
+        "checked": ["checkedChanged"]
+    }; }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-segment-button"; }
+};

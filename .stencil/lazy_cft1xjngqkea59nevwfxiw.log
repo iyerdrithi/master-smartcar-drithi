@@ -1,0 +1,87 @@
+import { registerInstance as __stencil_registerInstance, createEvent as __stencil_createEvent, getElement as __stencil_getElement } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { config } from '../../global/config';
+import { getIonMode } from '../../global/ionic-global';
+export const TabButton = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * If `true`, the user cannot interact with the tab button.
+         */
+        this.disabled = false;
+        /**
+         * The selected tab component
+         */
+        this.selected = false;
+        this.onKeyUp = (ev) => {
+            if (ev.key === 'Enter' || ev.key === ' ') {
+                this.selectTab(ev);
+            }
+        };
+        this.onClick = (ev) => {
+            this.selectTab(ev);
+        };
+        this.ionTabButtonClick = __stencil_createEvent(this, "ionTabButtonClick", 7);
+    }
+    onTabBarChanged(ev) {
+        this.selected = this.tab === ev.detail.tab;
+    }
+    componentWillLoad() {
+        if (this.layout === undefined) {
+            this.layout = config.get('tabButtonLayout', 'icon-top');
+        }
+    }
+    selectTab(ev) {
+        if (this.tab !== undefined) {
+            if (!this.disabled) {
+                this.ionTabButtonClick.emit({
+                    tab: this.tab,
+                    href: this.href,
+                    selected: this.selected
+                });
+            }
+            ev.preventDefault();
+        }
+    }
+    get hasLabel() {
+        return !!this.el.querySelector('ion-label');
+    }
+    get hasIcon() {
+        return !!this.el.querySelector('ion-icon');
+    }
+    get tabIndex() {
+        if (this.disabled) {
+            return -1;
+        }
+        const hasTabIndex = this.el.hasAttribute('tabindex');
+        if (hasTabIndex) {
+            return this.el.getAttribute('tabindex');
+        }
+        return 0;
+    }
+    render() {
+        const { disabled, hasIcon, hasLabel, tabIndex, href, rel, target, layout, selected, tab } = this;
+        const mode = getIonMode(this);
+        const attrs = {
+            download: this.download,
+            href,
+            rel,
+            target
+        };
+        return (h(Host, { onClick: this.onClick, onKeyup: this.onKeyUp, role: "tab", tabindex: tabIndex, "aria-selected": selected ? 'true' : null, id: tab !== undefined ? `tab-button-${tab}` : null, class: {
+                [mode]: true,
+                'tab-selected': selected,
+                'tab-disabled': disabled,
+                'tab-has-label': hasLabel,
+                'tab-has-icon': hasIcon,
+                'tab-has-label-only': hasLabel && !hasIcon,
+                'tab-has-icon-only': hasIcon && !hasLabel,
+                [`tab-layout-${layout}`]: true,
+                'ion-activatable': true,
+                'ion-selectable': true,
+                'ion-focusable': true
+            } }, h("a", Object.assign({}, attrs, { tabIndex: -1 }), h("slot", null), mode === 'md' && h("ion-ripple-effect", { type: "unbounded" }))));
+    }
+    get el() { return __stencil_getElement(this); }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-tab-button"; }
+};

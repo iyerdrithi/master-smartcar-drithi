@@ -1,0 +1,11 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { h } from "@stencil/core";
+export const AppRoot = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+    }
+    render() {
+        return (h("ion-app", null, h("ion-router", { useHash: false }, h("ion-route", { url: "/", component: "app-home" }), h("ion-route", { url: "/profile/:name", component: "app-profile" }), h("ion-route", { url: "/api-explorer", component: "api-explorer" })), h("ion-nav", null)));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:app-root"; }
+};

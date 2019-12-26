@@ -1,6 +1,6 @@
 import { r as registerInstance, e as createEvent, d as getIonMode, h, H as Host, f as getElement } from './core-4ccd584b.js';
 import { c as clamp } from './helpers-ad941782.js';
-import { a as hapticSelectionChanged } from './haptic-1fced9fd.js';
+import { b as hapticSelectionChanged } from './haptic-aefa686e.js';
 
 const PickerColumnCmp = class {
     constructor(hostRef) {

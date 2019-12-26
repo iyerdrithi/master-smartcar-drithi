@@ -1,0 +1,36 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { menuController } from '../../utils/menu-controller';
+import { updateVisibility } from './menu-toggle-util';
+export const MenuToggle = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        this.visible = false;
+        /**
+         * Automatically hides the content when the corresponding menu is not active.
+         *
+         * By default, it's `true`. Change it to `false` in order to
+         * keep `ion-menu-toggle` always visible regardless the state of the menu.
+         */
+        this.autoHide = true;
+        this.onClick = () => {
+            return menuController.toggle(this.menu);
+        };
+    }
+    connectedCallback() {
+        this.visibilityChanged();
+    }
+    async visibilityChanged() {
+        this.visible = await updateVisibility(this.menu);
+    }
+    render() {
+        const mode = getIonMode(this);
+        const hidden = this.autoHide && !this.visible;
+        return (h(Host, { onClick: this.onClick, "aria-hidden": hidden ? 'true' : null, class: {
+                [mode]: true,
+                'menu-toggle-hidden': hidden,
+            } }, h("slot", null)));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-menu-toggle"; }
+};

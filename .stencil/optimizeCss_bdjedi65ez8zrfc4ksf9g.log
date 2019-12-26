@@ -1,0 +1,6 @@
+.font{
+  font-weight: bold;
+}
+input:invalid {
+  border: red solid 3px;
+}

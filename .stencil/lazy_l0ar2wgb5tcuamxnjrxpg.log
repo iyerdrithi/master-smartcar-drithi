@@ -1,0 +1,20 @@
+import { registerInstance as __stencil_registerInstance } from "@stencil/core";
+import { Host, h } from "@stencil/core";
+import { getIonMode } from '../../global/ionic-global';
+import { createColorClasses } from '../../utils/theme';
+export const CardHeader = class {
+    constructor(hostRef) {
+        __stencil_registerInstance(this, hostRef);
+        /**
+         * If `true`, the card header will be translucent.
+         * Only applies when the mode is `"ios"` and the device supports
+         * [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
+         */
+        this.translucent = false;
+    }
+    render() {
+        const mode = getIonMode(this);
+        return (h(Host, { class: Object.assign(Object.assign({}, createColorClasses(this.color)), { 'card-header-translucent': this.translucent, [mode]: true }) }, h("slot", null)));
+    }
+    static get style() { return "STYLE_TEXT_PLACEHOLDER:ion-card-header"; }
+};
